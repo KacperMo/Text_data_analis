@@ -3,7 +3,7 @@ library(tm)
 library(hunspell)
 
 # zmiana katalogu roboczego
-work_dir <- "D:\\KW\\PJNS12"
+work_dir <- "L:\\lato21na22\\PJNS12"
 setwd(work_dir)
 
 # definicja lokalizacji katalogów funkcyjnych
@@ -29,7 +29,7 @@ corpus <- VCorpus(
   DirSource(
     corpus_dir,
     "UTF-8",
-    "*.txt"
+    #"*.txt"
   ),
   readerControl = list(
     language = "pl_PL"
@@ -78,20 +78,27 @@ paste_paragraphs <- function(text){
 corpus <- tm_map(corpus, content_transformer(paste_paragraphs))
 corpus <- tm_map(corpus, stripWhitespace)
 
-#zdefiniowanie funkcji do lematyzacji
+# zdefiniowanie funkcji do lematyzacji
 polish <- dictionary("pl_PL")
 lemmatize <- function(text){
-  text <- corpus[[1]]$content
   parsed_text <- hunspell_parse(text, dict = polish)
-  lemmatized_text <- hunspell_stem(parsed_text, dict = polish)
+  lemmatized_text <- hunspell_stem(parsed_text[[1]], dict = polish)
   for (i in 1:length(lemmatized_text)) {
-    if (length(lemmatized_text[i]) == 0) 
+    if (length(lemmatized_text[[i]]) == 0) 
       lemmatized_text[i] <- parsed_text[[1]][i]
-    if (length(lemmatized_text[i]) >  1) 
+    if (length(lemmatized_text[[i]]) >  1) 
       lemmatized_text[i] <- lemmatized_text[[i]][1]
   }
   new_text <- paste(lemmatized_text, collapse = " ")
   return(new_text)
 }
+corpus <- tm_map(corpus, content_transformer(lemmatize))
 
+# zapisanie wstępnie przetworzonego korpusu do plików
+preprocessed_dir <- create_path(
+  input_dir,
+  "Literatura - streszczenia - przetworzone"
+)
+dir.create(preprocessed_dir)
+writeCorpus(corpus, preprocessed_dir)
 
