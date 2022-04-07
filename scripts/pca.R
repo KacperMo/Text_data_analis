@@ -59,19 +59,60 @@ y <- pca$x[,2]
 plot(
   x, 
   y, 
-  text(
-    x,
-    y, 
-    paste(
-      "d",
-      1:length(rownames(dtm_tfidf_2_16)),
-      sep = ""
-    ),
-    pos = 4
-  ),
-  legend(
-    "bottom",
-    legend,
-    cex = 0.6
-  )
+  main = "Analiza głównych składowych",
+  xlab = "PC1",
+  ylab = "PC2",
+# xlim = c(-0.03,0.03),
+# ylim = c(0.03,0.06),
+  col = "darkmagenta"
 )
+text(
+  x,
+  y, 
+  paste(
+    "d",
+    1:length(rownames(dtm_tfidf_2_16)),
+    sep = ""
+  ),
+  pos = 4,
+  col = "darkmagenta"
+)
+legend(
+  "bottom",
+  legend,
+  cex = 0.5,
+  text.col = "darkmagenta"
+)
+
+# zapis wykresu do pliku .png
+pca_file <- create_path(
+  output_dir,
+  "pca.png"
+)
+png(pca_file)
+plot(
+  x, 
+  y, 
+  main = "Analiza głównych składowych",
+  xlab = "PC1",
+  ylab = "PC2",
+  col = "darkmagenta"
+)
+text(
+  x,
+  y, 
+  paste(
+    "d",
+    1:length(rownames(dtm_tfidf_2_16)),
+    sep = ""
+  ),
+  pos = 4,
+  col = "darkmagenta"
+)
+legend(
+  "bottom",
+  legend,
+  cex = 0.5,
+  text.col = "darkmagenta"
+)
+dev.off()
